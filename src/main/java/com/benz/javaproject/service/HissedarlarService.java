@@ -22,12 +22,10 @@ import java.util.List;
 public class HissedarlarService {
 
     private final HissedarlarRepository hissedarlarRepository;
-    private final HissedarlarSpecification hissedarlarSpecification;
 
     @Autowired
-    public HissedarlarService(HissedarlarRepository hissedarlarRepository,HissedarlarSpecification hissedarlarSpecification) {
+    public HissedarlarService(HissedarlarRepository hissedarlarRepository) {
         this.hissedarlarRepository = hissedarlarRepository;
-        this.hissedarlarSpecification = hissedarlarSpecification;
     }
 
 
@@ -117,9 +115,6 @@ public class HissedarlarService {
     public List<Hissedarlar> searchHissedarlar(HissedarSearchModel hissedarlarSearchModel) {
 
         Specification<Hissedarlar> specification = HissedarlarSpecification.searchHissedarlarBySearchModel(hissedarlarSearchModel);
-        if (specification == null){
-            throw new HissedarNotExistsError();
-        }
         return hissedarlarRepository.findAll(specification);
 
 
