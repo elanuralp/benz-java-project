@@ -1,6 +1,5 @@
 package com.benz.javaproject.exception;
 
-import com.benz.javaproject.exception.MyException;
 
 public class SenetBulunamadiError extends MyException {
     public SenetBulunamadiError() {

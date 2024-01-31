@@ -64,9 +64,8 @@ public class HissedarlarService {
     public Hissedarlar updateHissedar(Long id, Hissedarlar updatedHissedar) {
         Hissedarlar existingHissedar = hissedarlarRepository.findById(id).orElse(null);
 
-
         if (existingHissedar != null) {
-            // Güncelleme işlemleri burada yapılır
+            // Güncelleme işlemleri
             existingHissedar.setUnvan(updatedHissedar.getUnvan());
             existingHissedar.setAdres(updatedHissedar.getAdres());
             existingHissedar.setTelefon(updatedHissedar.getTelefon());
@@ -96,7 +95,7 @@ public class HissedarlarService {
 
 
     public boolean isSicilNumarasiUnique(String sicilNumarasi) {
-        if (!hissedarlarRepository.findBySicilNumarasi(sicilNumarasi).isEmpty()) {
+        if (hissedarlarRepository.findBySicilNumarasi(sicilNumarasi).isPresent()) {
             throw new SicilNoExistsError();
         }
         return true;
@@ -113,12 +112,8 @@ public class HissedarlarService {
 
     //arama
     public List<Hissedarlar> searchHissedarlar(HissedarSearchModel hissedarlarSearchModel) {
-
         Specification<Hissedarlar> specification = HissedarlarSpecification.searchHissedarlarBySearchModel(hissedarlarSearchModel);
         return hissedarlarRepository.findAll(specification);
-
-
-
     }
 
     @Transactional

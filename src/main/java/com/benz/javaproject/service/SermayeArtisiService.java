@@ -1,6 +1,7 @@
 package com.benz.javaproject.service;
 
 import com.benz.javaproject.entity.SermayeArtisi;
+import com.benz.javaproject.exception.SermayeArtisiNotFoundError;
 import com.benz.javaproject.model.SermayeArtisSearchModel;
 import com.benz.javaproject.repository.SermayeArtisiRepository;
 import com.benz.javaproject.specification.SermayeArtisiSpecification;
@@ -27,7 +28,7 @@ public class SermayeArtisiService {
     }
 
     public SermayeArtisi getSermayeArtisiById(Long tertipNo) {
-        return sermayeArtisiRepository.findById(tertipNo).orElse(null);
+        return sermayeArtisiRepository.findById(tertipNo).orElseThrow(SermayeArtisiNotFoundError::new);
     }
 
     @Transactional
@@ -37,19 +38,13 @@ public class SermayeArtisiService {
 
     @Transactional
     public SermayeArtisi updateSermayeArtisi(Long tertipNo, SermayeArtisi updatedSermayeArtisi) {
-        SermayeArtisi existingSermayeArtisi = sermayeArtisiRepository.findById(tertipNo).orElse(null);
-
-        if (existingSermayeArtisi != null) {
+        SermayeArtisi existingSermayeArtisi = sermayeArtisiRepository.findById(tertipNo).orElseThrow(SermayeArtisiNotFoundError::new);
             existingSermayeArtisi.setYil(updatedSermayeArtisi.getYil());
             existingSermayeArtisi.setBedelliArtisMiktari(updatedSermayeArtisi.getBedelliArtisMiktari());
             existingSermayeArtisi.setBedelsizArtisMiktari(updatedSermayeArtisi.getBedelsizArtisMiktari());
             existingSermayeArtisi.setSermayeArtisOrani(updatedSermayeArtisi.getSermayeArtisOrani());
             existingSermayeArtisi.setEskiSermaye(updatedSermayeArtisi.getEskiSermaye());
-
             return sermayeArtisiRepository.save(existingSermayeArtisi);
-        } else {
-            return null;
-        }
     }
 
     @Transactional
@@ -64,6 +59,8 @@ public class SermayeArtisiService {
 
     @Transactional
     public void deleteSermayeArtisi(Long tertipNo) {
+        SermayeArtisi existingSermayeArtisi = sermayeArtisiRepository.findById(tertipNo)
+                .orElseThrow(SermayeArtisiNotFoundError::new);
         sermayeArtisiRepository.deleteById(tertipNo);
     }
 }
