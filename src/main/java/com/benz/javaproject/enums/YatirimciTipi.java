@@ -7,6 +7,6 @@ import jakarta.persistence.Converter;
 
 public enum YatirimciTipi{
     GERCEK,
-    TUZEL;
+    TUZEL
 
     }

@@ -1,5 +1,6 @@
 package com.benz.javaproject.entity;
 
+import ch.qos.logback.core.model.processor.NOPModelHandler;
 import com.benz.javaproject.enums.KuponTuru;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,5 +36,6 @@ public class HisseSenetleri {
     private Hissedarlar hissedar;
 
     @Column(name = "nominal_deger")
-    private double nominalDeger;
+    private BigDecimal nominalDeger;
+
 }

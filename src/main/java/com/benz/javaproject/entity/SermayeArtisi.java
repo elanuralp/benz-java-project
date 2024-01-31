@@ -3,6 +3,7 @@ package com.benz.javaproject.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 @Getter
 @Setter
@@ -15,9 +16,9 @@ public class SermayeArtisi {
     private Long tertipNo;
 
     private int yil;
-    private double bedelliArtisMiktari;
-    private double bedelsizArtisMiktari;
-    private double sermayeArtisOrani;
-    private double eskiSermaye;
+    private BigDecimal bedelliArtisMiktari;
+    private BigDecimal bedelsizArtisMiktari;
+    private BigDecimal sermayeArtisOrani;
+    private BigDecimal eskiSermaye;
 
 }
