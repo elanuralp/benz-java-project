@@ -12,15 +12,12 @@ import java.util.List;
 public class SermayeArtisi {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long tertipID;
+    private Long tertipNo;
 
     private int yil;
     private double bedelliArtisMiktari;
     private double bedelsizArtisMiktari;
     private double sermayeArtisOrani;
     private double eskiSermaye;
-    private double yeniSermaye;
-
 
 }

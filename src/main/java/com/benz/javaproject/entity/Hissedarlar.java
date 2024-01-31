@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,15 +22,20 @@ public class Hissedarlar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hissedarId;
     private String unvan;
+
     private String adres;
+
     private String telefon;
 
     @Enumerated(EnumType.STRING)
     private YatirimciTipi yatirimciTipi;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 8) //0 ile başlamicak yapıcaksın
     private String sicilNumarasi;
 
-    @OneToMany(mappedBy = "hissedar", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HisseSenetleri> hisseSenetleriList;
+
+    @OneToMany(mappedBy = "seriNo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HisseSenetleri> senetlerList = new ArrayList<>();
+
+    //list hissesenedi
 }

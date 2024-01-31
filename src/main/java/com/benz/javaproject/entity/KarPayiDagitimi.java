@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class KarPayıDağıtımı {
+public class KarPayiDagitimi {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dagitimId;
@@ -20,10 +20,6 @@ public class KarPayıDağıtımı {
     @JoinColumn(name = "tertip_id")
     private SermayeArtisi sermayeArtisi;
 
-    private double karPayiOrani;
     private int dagitimYili;
-    private double karPayiTutari;
-    private int seriNo;
-
-
+    private int seriNo; //o yıl içinde kaçıncı kar payı olduğu belli olsun
 }
