@@ -9,9 +9,7 @@ public class GlobalExceptionHandler {
 
     public record ExceptionResponse(String exceptionMessage, String exceptionName, int code) {}
 
-    @ExceptionHandler({MyException.class,
-            SicilNoExistsError.class,
-            HissedarNotExistsError.class})
+    @ExceptionHandler({MyException.class})
     public ResponseEntity<ExceptionResponse> handleError(MyException exception) {
         return ResponseEntity.status(exception.getHttpCode()).body(new ExceptionResponse(exception.getMessage(), exception.getName(), exception.getCode()));
     }

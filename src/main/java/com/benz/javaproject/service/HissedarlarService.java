@@ -105,7 +105,7 @@ public class HissedarlarService {
     }
 
     private boolean isSicilNumarasiValid(String sicilNumarasi) {
-        if (sicilNumarasi.startsWith("0")) {
+        if (sicilNumarasi.startsWith("0") || sicilNumarasi.length()!=8) {
             throw new SicilNoNotValidError();
         }
         return true;
@@ -128,11 +128,9 @@ public class HissedarlarService {
 
     @Transactional
     public void deleteHissedar(Long id) {
-        try {
-            hissedarlarRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new HissedarNotExistsError();
-        }
+        Hissedarlar existingHissedar = hissedarlarRepository.findById(id)
+                .orElseThrow(HissedarNotExistsError::new);
+        hissedarlarRepository.deleteById(id);
     }
 
 
@@ -144,6 +142,4 @@ public class HissedarlarService {
 
         return hissedar.getSenetlerList();
     }
-
-
 }
