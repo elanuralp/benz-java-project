@@ -1,6 +1,7 @@
 package com.benz.javaproject.entity;
 
 import com.benz.javaproject.enums.IslemTipi;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 public class IslemKayitlari {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long kayitId;
 
     @Enumerated(EnumType.STRING)

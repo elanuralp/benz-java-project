@@ -19,9 +19,10 @@ public class HissedarlarSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (StringUtils.hasText(hissedarlarSearchModel.getUnvan())) {
-                predicates.add(criteriaBuilder.like(
+                String unvanLower = hissedarlarSearchModel.getUnvan().toLowerCase().trim();
+                predicates.add(criteriaBuilder.equal(
                         criteriaBuilder.lower(root.get(Hissedarlar_.UNVAN)),
-                        "%" + hissedarlarSearchModel.getUnvan().toLowerCase().trim() + "%"
+                        unvanLower
                 ));
             }
 

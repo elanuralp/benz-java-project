@@ -1,6 +1,7 @@
 package com.benz.javaproject.entity;
 
 import com.benz.javaproject.enums.YatirimciTipi;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,8 @@ import java.util.List;
 public class Hissedarlar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+
     private Long hissedarId;
     private String unvan;
 
@@ -33,9 +36,8 @@ public class Hissedarlar {
     @Column(unique = true, length = 8) //0 ile başlamicak yapıcaksın
     private String sicilNumarasi;
 
-
-    @OneToMany(mappedBy = "seriNo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "hissedar", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<HisseSenetleri> senetlerList = new ArrayList<>();
 
-    //list hissesenedi
 }

@@ -2,6 +2,7 @@ package com.benz.javaproject.service;
 
 import com.benz.javaproject.entity.HisseSenetleri;
 import com.benz.javaproject.entity.Hissedarlar;
+import com.benz.javaproject.entity.Kuponlar;
 import com.benz.javaproject.exception.HissedarNotExistsError;
 import com.benz.javaproject.exception.SenetBulunamadiError;
 import com.benz.javaproject.exception.SicilNoExistsError;
@@ -9,7 +10,6 @@ import com.benz.javaproject.exception.SicilNoNotValidError;
 import com.benz.javaproject.model.hissedar.HissedarSearchModel;
 import com.benz.javaproject.repository.HissedarlarRepository;
 import com.benz.javaproject.specification.HissedarlarSpecification;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -34,19 +34,10 @@ public class HissedarlarService {
     }
 
     public Hissedarlar getHissedarById(Long id) {
-        try {
             Hissedarlar hissedar = hissedarlarRepository.findById(id)
                     .orElseThrow(HissedarNotExistsError::new);
-
-            // Eğer hissedar varsa, sicil numarasını kontrol et
-            if (!isSicilNumarasiUnique(hissedar.getSicilNumarasi())) {
-                throw new SicilNoExistsError();
-            }
             return hissedar;
-        } catch (SicilNoExistsError e) {
-            // Sicil numarası zaten mevcut hatası
-            throw e;
-        }
+
     }
 
 
@@ -89,7 +80,7 @@ public class HissedarlarService {
                 throw new SicilNoExistsError() ;
             }
         }
-        hissedarList.forEach(h -> isSicilNumarasiValid(h.getSicilNumarasi()));
+        hissedarList.forEach(h -> isSicilNumarasiValid(h.getSicilNumarasi())); //çalışmıo bak sonra
         return hissedarlarRepository.saveAll(hissedarList);
     }
 
@@ -116,6 +107,7 @@ public class HissedarlarService {
         return hissedarlarRepository.findAll(specification);
     }
 
+
     @Transactional
     public void deleteHissedar(Long id) {
         Hissedarlar existingHissedar = hissedarlarRepository.findById(id)
@@ -132,4 +124,12 @@ public class HissedarlarService {
 
         return hissedar.getSenetlerList();
     }
+
+    @Transactional
+    public void updateHissedar(Hissedarlar hissedar) {
+        hissedarlarRepository.save(hissedar);
+    }
+
+
+
 }

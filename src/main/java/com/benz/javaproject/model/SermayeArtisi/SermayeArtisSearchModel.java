@@ -1,8 +1,6 @@
-package com.benz.javaproject.model;
+package com.benz.javaproject.model.SermayeArtisi;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;

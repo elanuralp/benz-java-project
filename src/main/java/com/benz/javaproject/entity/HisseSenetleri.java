@@ -2,6 +2,9 @@ package com.benz.javaproject.entity;
 
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import com.benz.javaproject.enums.KuponTuru;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,17 +15,22 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+
 public class HisseSenetleri {
-    @Id  //seri no 1 den başlicak ardışık ilerlicek
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seri_no_generator")
-    @SequenceGenerator(name = "seri_no_generator", sequenceName = "seri_no_seq", initialValue = 1, allocationSize = 1)
-    @Column(name = "seri_no", nullable = false, unique = true)
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    private Long senetId;
+
     private int seriNo;
 
     @ManyToOne
@@ -37,5 +45,11 @@ public class HisseSenetleri {
 
     @Column(name = "nominal_deger")
     private BigDecimal nominalDeger;
+
+
+
+    @OneToMany(mappedBy = "senet", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Kuponlar> kuponlarList = new ArrayList<>();
+
 
 }

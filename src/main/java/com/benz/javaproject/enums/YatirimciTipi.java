@@ -1,12 +1,9 @@
 package com.benz.javaproject.enums;
 
-import ch.qos.logback.classic.model.LevelModel;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-
-public enum YatirimciTipi{
+public enum YatirimciTipi {
     GERCEK,
     TUZEL
-
-    }
+}

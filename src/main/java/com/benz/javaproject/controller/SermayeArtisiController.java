@@ -1,10 +1,9 @@
 package com.benz.javaproject.controller;
 
-
 import com.benz.javaproject.entity.SermayeArtisi;
-
-import com.benz.javaproject.model.SermayeArtisSearchModel;
-
+import com.benz.javaproject.model.SermayeArtisi.SermayeArtisSearchModel;
+import com.benz.javaproject.model.SermayeArtisi.SermayeArtisiUpdateModel;
+import com.benz.javaproject.model.SermayeArtisi.SermayeArtısıAddModel;
 import com.benz.javaproject.service.SermayeArtisiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/sermaye-artisi")
 public class SermayeArtisiController {
+
     private final SermayeArtisiService sermayeArtisiService;
 
     @Autowired
-    public SermayeArtisiController(SermayeArtisiService sermayeArtisiService)
-    {this.sermayeArtisiService = sermayeArtisiService;}
-
+    public SermayeArtisiController(SermayeArtisiService sermayeArtisiService) {
+        this.sermayeArtisiService = sermayeArtisiService;
+    }
 
     @GetMapping
     public ResponseEntity<List<SermayeArtisi>> getAllSermayeArtisi() {
@@ -30,30 +30,24 @@ public class SermayeArtisiController {
     }
 
     @GetMapping("/{tertipNo}")
-    public ResponseEntity<SermayeArtisi> getHissedarById(@PathVariable Long tertipNo) {
+    public ResponseEntity<SermayeArtisi> getSermayeArtisiById(@PathVariable Long tertipNo) {
         SermayeArtisi sermayeArtisi = sermayeArtisiService.getSermayeArtisiById(tertipNo);
         return ResponseEntity.ok(sermayeArtisi);
     }
 
     @PostMapping
-    public ResponseEntity<SermayeArtisi> createHissedar(@RequestBody SermayeArtisi sermayeArtisi) {
+    public ResponseEntity<SermayeArtisi> createSermayeArtisi(@RequestBody SermayeArtısıAddModel sermayeArtisi) {
         SermayeArtisi createdSermayeArtisi = sermayeArtisiService.createSermayeArtisi(sermayeArtisi);
-        if (createdSermayeArtisi != null) {
-            return ResponseEntity.ok(createdSermayeArtisi);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(createdSermayeArtisi);
     }
 
     @PutMapping("/{tertipNo}")
-    public ResponseEntity<SermayeArtisi> updateHissedar(@PathVariable Long tertipNo, @RequestBody SermayeArtisi updatedSermayeArtisi) {
+    public ResponseEntity<SermayeArtisi> updateSermayeArtisi(@PathVariable Long tertipNo, @RequestBody SermayeArtisiUpdateModel updatedSermayeArtisi) {
         SermayeArtisi sermayeArtisi = sermayeArtisiService.updateSermayeArtisi(tertipNo, updatedSermayeArtisi);
-        if (sermayeArtisi != null) {
-            return ResponseEntity.ok(sermayeArtisi);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(sermayeArtisi);
+
     }
+
 
     @PostMapping("/multiple")
     public ResponseEntity<List<SermayeArtisi>> addMultipleSermayeArtisi(@RequestBody List<SermayeArtisi> sermayeArtisiList) {
@@ -83,5 +77,4 @@ public class SermayeArtisiController {
         sermayeArtisiService.deleteSermayeArtisi(tertipNo);
         return ResponseEntity.noContent().build();
     }
-
 }

@@ -22,7 +22,7 @@ public class HissedarController {
         this.hissedarlarService = hissedarlarService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Hissedarlar>> getAllHissedarlar() {
         List<Hissedarlar> hissedarlar = hissedarlarService.getAllHissedarlar();
         return ResponseEntity.ok(hissedarlar);
@@ -84,9 +84,13 @@ public class HissedarController {
         return ResponseEntity.noContent().build();
     }
 
+
+
     @GetMapping("/{id}/senetler")
-    public ResponseEntity<List<HisseSenetleri>> getHissedarSenetleri(@PathVariable Long id) {
+    public ResponseEntity<List<HisseSenetleri>> getHissedarSenetleri(@PathVariable Long id) { //bunu burda mı yazcaz??
         List<HisseSenetleri> hissedarSenetleri = hissedarlarService.getHissedarSenetleri(id);
         return ResponseEntity.ok(hissedarSenetleri);
     }
+
+
 }

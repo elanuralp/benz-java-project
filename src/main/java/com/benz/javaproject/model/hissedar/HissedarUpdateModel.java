@@ -1,14 +1,11 @@
 package com.benz.javaproject.model.hissedar;
 
 import com.benz.javaproject.enums.YatirimciTipi;
-import lombok.*;
+import lombok.Data;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-public class HissedarSearchModel {
-
+@Data
+public class HissedarUpdateModel {
+    private String id; // Güncellenmek istenen ortağın kimliği
     private String unvan;
     private String adres;
     private String telefon;

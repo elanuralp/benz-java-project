@@ -2,7 +2,9 @@ package com.benz.javaproject.service;
 
 import com.benz.javaproject.entity.SermayeArtisi;
 import com.benz.javaproject.exception.SermayeArtisiNotFoundError;
-import com.benz.javaproject.model.SermayeArtisSearchModel;
+import com.benz.javaproject.model.SermayeArtisi.SermayeArtisSearchModel;
+import com.benz.javaproject.model.SermayeArtisi.SermayeArtisiUpdateModel;
+import com.benz.javaproject.model.SermayeArtisi.SermayeArtısıAddModel;
 import com.benz.javaproject.repository.SermayeArtisiRepository;
 import com.benz.javaproject.specification.SermayeArtisiSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +34,28 @@ public class SermayeArtisiService {
     }
 
     @Transactional
-    public SermayeArtisi createSermayeArtisi(SermayeArtisi sermayeArtisi) {
+    public SermayeArtisi createSermayeArtisi(SermayeArtısıAddModel sermayeArtisiAddModel) {
+        SermayeArtisi sermayeArtisi = new SermayeArtisi();
+        sermayeArtisi.setBedelliArtisMiktari(sermayeArtisiAddModel.getBedelliArtisMiktari());
+        sermayeArtisi.setYil(sermayeArtisiAddModel.getYıl());
+        sermayeArtisi.setBedelsizArtisMiktari(sermayeArtisiAddModel.getBedelsizArtisMiktari());
+        sermayeArtisi.setSermayeArtisOrani(sermayeArtisiAddModel.getSermayeArtisOrani());
+        sermayeArtisi.setEskiSermaye(sermayeArtisiAddModel.getEskiSermaye());
         return sermayeArtisiRepository.save(sermayeArtisi);
     }
 
     @Transactional
-    public SermayeArtisi updateSermayeArtisi(Long tertipNo, SermayeArtisi updatedSermayeArtisi) {
+    public SermayeArtisi updateSermayeArtisi(Long tertipNo, SermayeArtisiUpdateModel updatedSermayeArtisiAddModel) {
         SermayeArtisi existingSermayeArtisi = sermayeArtisiRepository.findById(tertipNo).orElseThrow(SermayeArtisiNotFoundError::new);
-            existingSermayeArtisi.setYil(updatedSermayeArtisi.getYil());
-            existingSermayeArtisi.setBedelliArtisMiktari(updatedSermayeArtisi.getBedelliArtisMiktari());
-            existingSermayeArtisi.setBedelsizArtisMiktari(updatedSermayeArtisi.getBedelsizArtisMiktari());
-            existingSermayeArtisi.setSermayeArtisOrani(updatedSermayeArtisi.getSermayeArtisOrani());
-            existingSermayeArtisi.setEskiSermaye(updatedSermayeArtisi.getEskiSermaye());
-            return sermayeArtisiRepository.save(existingSermayeArtisi);
+        existingSermayeArtisi.setYil(updatedSermayeArtisiAddModel.getYıl());
+        existingSermayeArtisi.setBedelliArtisMiktari(updatedSermayeArtisiAddModel.getBedelliArtisMiktari());
+        existingSermayeArtisi.setBedelsizArtisMiktari(updatedSermayeArtisiAddModel.getBedelsizArtisMiktari());
+        existingSermayeArtisi.setSermayeArtisOrani(updatedSermayeArtisiAddModel.getSermayeArtisOrani());
+        existingSermayeArtisi.setEskiSermaye(updatedSermayeArtisiAddModel.getEskiSermaye());
+        // Diğer güncelleme işlemleri
+        return sermayeArtisiRepository.save(existingSermayeArtisi);
     }
+
 
     @Transactional
     public List<SermayeArtisi> addMultipleSermayeArtisi(List<SermayeArtisi> sermayeArtisiList) {
@@ -63,4 +73,6 @@ public class SermayeArtisiService {
                 .orElseThrow(SermayeArtisiNotFoundError::new);
         sermayeArtisiRepository.deleteById(tertipNo);
     }
+
+
 }
