@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +23,10 @@ public class KarPayiDagitimi {
     @ManyToOne
     @JoinColumn(name = "tertip_id")
     private SermayeArtisi sermayeArtisi;
+
+    private BigDecimal karPayiOrani;
+
+
 
     private int dagitimYili;
     private int seriNo; //o yıl içinde kaçıncı kar payı olduğu belli olsun

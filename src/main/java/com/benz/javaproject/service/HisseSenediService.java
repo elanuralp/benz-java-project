@@ -42,6 +42,17 @@ public class HisseSenediService {
     }
 
 
+    public List<HisseSenetleri> getSenetlerByTertipNo(Long tertipNo) {
+        // Belirtilen tertip numarasına sahip sermaye artışına bağlı senetleri al
+        Specification<HisseSenetleri> spec = HisseSenetleriSpecification.searchByTertipNo(tertipNo);
+        return hisseSenetleriRepository.findAll(spec);
+    }
+
+    public List<HisseSenetleri> getSenetlerByHissedar(Long hissedarId) {
+        return hisseSenetleriRepository.findAll(HisseSenetleriSpecification.searchByHissedarId(hissedarId));
+    }
+
+
 
     @Transactional
     public List<HisseSenetleri> olusturSenetler(List<SenetBasRequest> senetListesi, Long tertipNo) {

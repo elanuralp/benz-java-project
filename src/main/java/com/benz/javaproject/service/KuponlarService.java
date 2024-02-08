@@ -4,7 +4,9 @@ import com.benz.javaproject.entity.HisseSenetleri;
 import com.benz.javaproject.entity.Kuponlar;
 import com.benz.javaproject.enums.KuponTuru;
 import com.benz.javaproject.repository.KuponlarRepository;
+import com.benz.javaproject.specification.KarPayiDagitimiSpecification;
 import com.benz.javaproject.specification.KuponlarSpecification;
+import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -76,11 +78,24 @@ public class KuponlarService {
         return kuponlar;
     }
 
-    public List<Kuponlar> searchKullanilmamisKuponlarBySenet(HisseSenetleri senet) {
-        // Belirtilen senete ait kullanılmamış kuponları al
-        Specification<Kuponlar> spec = KuponlarSpecification.searchKullanilmamisPayAlmaKuponlarBySenet(senet);
-        return kuponlarRepository.findAll(spec);
+
+    public Kuponlar getUygunKarPayiKuponu(HisseSenetleri senet, int dagitimYili) {
+        Specification<Kuponlar> spec = KarPayiDagitimiSpecification.getUygunKarPayiKuponuSpec(senet, dagitimYili);
+        return kuponlarRepository.findOne(spec).orElse(null);
     }
+
+
+
+
+//    public List<Kuponlar> getHisseSenedineBagliKarPayiKuponlari(Long senetId) {
+//
+//      List<Kuponlar> karPayiKuponlar = kuponlarRepository.findAll(KuponlarSpecification.kuponlarHisseSenedineBagli(senetId));
+//      return karPayiKuponlar;
+//    }
+
+
+
+
 
 
 

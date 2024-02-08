@@ -16,6 +16,7 @@ public class KuponlarSpecification {
                 criteriaBuilder.equal(root.get(Kuponlar_.senet).get("senetId"), senetId);
     }
 
+
     public static Specification<Kuponlar> searchPayAlmaKuponuByTertipNo(Long tertipNo){
         return (root, query, criteriaBuilder) ->{
             List<Predicate> predicates = new ArrayList<>();
@@ -29,6 +30,8 @@ public class KuponlarSpecification {
 
         };
     }
+
+
 
 
     public static Specification<Kuponlar> searchEnKucukKupurNoluPayAlmaKuponuListBySeriNo(Long seriNo) {
@@ -71,6 +74,22 @@ public class KuponlarSpecification {
 
             // Kullanılmamış kuponları seç
             predicates.add(criteriaBuilder.equal(root.get(Kuponlar_.kullanildiMi), false));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+
+    public static Specification<Kuponlar> searchKarPayıKuponlarBySenet(HisseSenetleri senet) {
+        return (Root<Kuponlar> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Belirtilen senete ait kuponları al
+            Join<Kuponlar, HisseSenetleri> senetJoin = root.join(Kuponlar_.senet, JoinType.INNER);
+            predicates.add(criteriaBuilder.equal(senetJoin, senet));
+
+            // Pay alma kuponlarını seç
+            predicates.add(criteriaBuilder.equal(root.get(Kuponlar_.kuponTuru), KuponTuru.KAR_PAYI));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

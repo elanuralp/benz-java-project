@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -28,6 +29,14 @@ public class IslemlerController {
         islemlerService.senetVer(hissedarId, seriNo);
         return ResponseEntity.status(HttpStatus.OK).body("Hissedara senetler başarıyla verildi.");
     }
+
+
+    @PostMapping("/karPayiDagit/{hissedarId}/{tertipNo}/{dagitimYili}/{karPayiOranı}")
+    public ResponseEntity<String> karPayiDagit(@PathVariable Long tertipNo, @PathVariable Long hissedarId, @PathVariable int dagitimYili, @PathVariable BigDecimal karPayiOranı) {
+        islemlerService.karPayiDagitimiYap(tertipNo, hissedarId, dagitimYili,karPayiOranı);
+        return ResponseEntity.ok("Kar payı dağıtımı başarıyla gerçekleştirildi.");
+    }
+
 
 
 }
