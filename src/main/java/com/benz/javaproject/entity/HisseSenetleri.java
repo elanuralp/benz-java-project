@@ -33,13 +33,13 @@ public class HisseSenetleri {
 
     private int seriNo;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tertip_no")
     private SermayeArtisi sermayeArtisi;
 
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "hissedar_id",nullable = true)
     private Hissedarlar hissedar;
 

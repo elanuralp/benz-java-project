@@ -1,8 +1,7 @@
 package com.benz.javaproject.controller;
 
 import com.benz.javaproject.entity.HisseSenetleri;
-import com.benz.javaproject.model.HisseSenediSearchModel;
-import com.benz.javaproject.model.SenetBasRequest;
+import com.benz.javaproject.model.hissesenedi.SenetBasRequest;
 import com.benz.javaproject.service.HisseSenediService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

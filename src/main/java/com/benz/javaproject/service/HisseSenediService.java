@@ -4,7 +4,7 @@ import com.benz.javaproject.entity.HisseSenetleri;
 import com.benz.javaproject.entity.Kuponlar;
 import com.benz.javaproject.entity.SermayeArtisi;
 import com.benz.javaproject.exception.HisseSenediNotExistsError;
-import com.benz.javaproject.model.SenetBasRequest;
+import com.benz.javaproject.model.hissesenedi.SenetBasRequest;
 import com.benz.javaproject.repository.HisseSenetleriRepository;
 import com.benz.javaproject.specification.HisseSenetleriSpecification;
 import com.benz.javaproject.specification.KuponlarSpecification;
@@ -23,7 +23,6 @@ public class HisseSenediService {
     private final KuponlarService kuponlarService;
     private final SermayeArtisiService sermayeArtisiService;
 
-    private final Map<Long, Integer> lastSeriNoMap = new HashMap<>();
 
     @Autowired
     public HisseSenediService(HisseSenetleriRepository hisseSenetleriRepository, KuponlarService kuponlarService, SermayeArtisiService sermayeArtisiService) {
@@ -82,16 +81,16 @@ public class HisseSenediService {
     }
 
 
-    public HisseSenetleri getAlinabilirSenetBySeriNo(Long seriNo) {
-        // Belirtilen seri numarasına sahip senedi bul
-        Specification<HisseSenetleri> spec = KuponlarSpecification.searchBySeriNo(seriNo);
-        List<HisseSenetleri> senetler = hisseSenetleriRepository.findAll(spec);
-        if (senetler.isEmpty()) {
-            return null;
-        } else {
-            return senetler.get(0); // Örneğin, ilk seneti seçtik
-        }
-    }
+//    public HisseSenetleri getAlinabilirSenetBySeriNo(Long seriNo) {
+//        // Belirtilen seri numarasına sahip senedi bul
+//        Specification<HisseSenetleri> spec = KuponlarSpecification.searchBySeriNo(seriNo);
+//        List<HisseSenetleri> senetler = hisseSenetleriRepository.findAll(spec);
+//        if (senetler.isEmpty()) {
+//            return null;
+//        } else {
+//            return senetler.get(0); // Örneğin, ilk seneti seçtik
+//        }
+//    }
 
 
 

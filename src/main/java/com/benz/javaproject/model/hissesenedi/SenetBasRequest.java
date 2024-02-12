@@ -1,4 +1,4 @@
-package com.benz.javaproject.model;
+package com.benz.javaproject.model.hissesenedi;
 
 import lombok.Getter;
 import lombok.Setter;

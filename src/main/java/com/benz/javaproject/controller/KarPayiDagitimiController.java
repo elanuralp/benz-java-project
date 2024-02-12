@@ -32,11 +32,11 @@ public class KarPayiDagitimiController {
         return new ResponseEntity<>(karPayiDagitimi, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<KarPayiDagitimi> addKarPayiDagitimi(@RequestBody KarPayiDagitimi karPayiDagitimi) {
-        KarPayiDagitimi newKarPayiDagitimi = karPayiDagitimiService.saveKarPayiDagitimi(karPayiDagitimi);
-        return new ResponseEntity<>(newKarPayiDagitimi, HttpStatus.CREATED);
-    }
+//    @PostMapping("/add")
+//    public ResponseEntity<KarPayiDagitimi> addKarPayiDagitimi(@RequestBody KarPayiDagitimi karPayiDagitimi) {
+//        KarPayiDagitimi newKarPayiDagitimi = karPayiDagitimiService.saveKarPayiDagitimi(karPayiDagitimi);
+//        return new ResponseEntity<>(newKarPayiDagitimi, HttpStatus.CREATED);
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteKarPayiDagitimi(@PathVariable("id") Long id) {

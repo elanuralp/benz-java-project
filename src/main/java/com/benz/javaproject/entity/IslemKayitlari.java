@@ -23,20 +23,15 @@ public class IslemKayitlari {
     @Enumerated(EnumType.STRING)
     private IslemTipi islemTipi;
 
-    @ManyToOne
-    @JoinColumn(name = "kuponNumarasi")
-    private Kuponlar kupon;
-
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "dagitimId")
     private KarPayiDagitimi karPayiDagitimi;
-
-
     private LocalDateTime islemZamani;
-
     private BigDecimal karPayiTutari;
-
-    private BigDecimal senetTutari;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "senetId")
+    private HisseSenetleri hisseSenetleri;
+    private Integer seriNo;
 
 
 

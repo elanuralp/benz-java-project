@@ -1,8 +1,5 @@
 package com.benz.javaproject.controller;
 
-import com.benz.javaproject.entity.HisseSenetleri;
-import com.benz.javaproject.model.SenetBasRequest;
-import com.benz.javaproject.service.HisseSenediService;
 import com.benz.javaproject.service.IslemlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Controller
 @RestController("/ıslemler")
@@ -31,10 +27,10 @@ public class IslemlerController {
     }
 
 
-    @PostMapping("/karPayiDagit/{hissedarId}/{tertipNo}/{dagitimYili}/{karPayiOranı}")
-    public ResponseEntity<String> karPayiDagit(@PathVariable Long tertipNo, @PathVariable Long hissedarId, @PathVariable int dagitimYili, @PathVariable BigDecimal karPayiOranı) {
-        islemlerService.karPayiDagitimiYap(tertipNo, hissedarId, dagitimYili,karPayiOranı);
-        return ResponseEntity.ok("Kar payı dağıtımı başarıyla gerçekleştirildi.");
+    @PostMapping("/karPayiDagit/{tertipNo}/{dagitimYili}/{karPayiOranı}")
+    public ResponseEntity<String> karPayiDagit(@PathVariable Long tertipNo, @PathVariable int dagitimYili, @PathVariable BigDecimal karPayiOranı) {
+        islemlerService.karPayiDagitimiYap(tertipNo, dagitimYili,karPayiOranı);
+        return ResponseEntity.noContent().build();
     }
 
 

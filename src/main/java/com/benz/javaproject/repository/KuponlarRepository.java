@@ -1,6 +1,7 @@
 package com.benz.javaproject.repository;
 
 import com.benz.javaproject.entity.HisseSenetleri;
+import com.benz.javaproject.entity.IslemKayitlari;
 import com.benz.javaproject.entity.Kuponlar;
 import com.benz.javaproject.enums.KuponTuru;
 import jakarta.transaction.Transactional;

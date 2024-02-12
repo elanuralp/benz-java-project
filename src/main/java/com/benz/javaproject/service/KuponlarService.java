@@ -43,7 +43,7 @@ public class KuponlarService {
                 //System.out.println(i);
                 kupon.setKuponYili(sermayeArtisiYili + i - payAlmaKuponSayisi - 1);
             } else {
-                kupon.setKuponYili(null); // Pay alma kuponlarında yıl değeri null olmalı
+                kupon.setKuponYili(null);
             }
             kupon.setKupurNo((i <= payAlmaKuponSayisi) ? i : null); // Küpür numarası sadece pay alma
             kupon.setKullanildiMi(false);
@@ -72,20 +72,13 @@ public class KuponlarService {
         return kuponlarRepository.save(kupon);
     }
 
-    public List<Kuponlar> searchEnKucukKupurNoluPayAlmaKuponuListBySeriNo(Long seriNo) {
-        Specification<Kuponlar> specification = KuponlarSpecification.searchEnKucukKupurNoluPayAlmaKuponuListBySeriNo(seriNo);
-        List<Kuponlar> kuponlar = kuponlarRepository.findAll(specification);
-        return kuponlar;
+
+
+
+
+    public List<Kuponlar> findAll(Specification<Kuponlar> spec) {
+        return kuponlarRepository.findAll(spec);
     }
-
-
-    public Kuponlar getUygunKarPayiKuponu(HisseSenetleri senet, int dagitimYili) {
-        Specification<Kuponlar> spec = KarPayiDagitimiSpecification.getUygunKarPayiKuponuSpec(senet, dagitimYili);
-        return kuponlarRepository.findOne(spec).orElse(null);
-    }
-
-
-
 
 //    public List<Kuponlar> getHisseSenedineBagliKarPayiKuponlari(Long senetId) {
 //
@@ -99,9 +92,6 @@ public class KuponlarService {
 
 
 
-    public List<Kuponlar> findAll(Specification<Kuponlar> spec) {
-        return kuponlarRepository.findAll(spec);
-    }
 
 
 }

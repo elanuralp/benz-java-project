@@ -1,6 +1,7 @@
 package com.benz.javaproject.service;
 
 import com.benz.javaproject.entity.*;
+import com.benz.javaproject.enums.IslemTipi;
 import com.benz.javaproject.specification.KarPayiDagitimiSpecification;
 import com.benz.javaproject.specification.KuponlarSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.logging.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,14 +26,16 @@ public class IslemlerService {
     private final KarPayiDagitimiService karPayıDagitimlariService;
     private final SermayeArtisiService sermayeArtisiService;
 
+    private final IslemKayitlariService islemKayitlariService;
 
     @Autowired
-    public IslemlerService(HisseSenediService hisseSenediService, HissedarlarService hissedarlarService, KuponlarService kuponlarService,KarPayiDagitimiService karPayıDagitimlariService,SermayeArtisiService sermayeArtisiService) {
+    public IslemlerService(HisseSenediService hisseSenediService, HissedarlarService hissedarlarService, KuponlarService kuponlarService,KarPayiDagitimiService karPayıDagitimlariService,SermayeArtisiService sermayeArtisiService,IslemKayitlariService islemKayitlariService) {
         this.hisseSenediService = hisseSenediService;
         this.hissedarlarService = hissedarlarService;
         this.kuponlarService = kuponlarService;
         this.karPayıDagitimlariService = karPayıDagitimlariService;
         this.sermayeArtisiService = sermayeArtisiService;
+        this.islemKayitlariService = islemKayitlariService;
     }
 
 
@@ -60,6 +64,19 @@ public class IslemlerService {
                     hissedar.getSenetlerList().add(alinacakSenet);
                     hissedarlarService.updateHissedar(hissedar);
                 }
+
+                // İşlem kaydını oluştur
+                IslemKayitlari islemKayitlari = new IslemKayitlari();
+                islemKayitlari.setIslemTipi(IslemTipi.HISSE_SENETI); // İşlem tipi kar payı dağıtımı olarak ayarlanır
+                islemKayitlari.setKarPayiDagitimi(null); // İlgili kar payı dağıtımı
+                islemKayitlari.setIslemZamani(LocalDateTime.now());
+                islemKayitlari.setKarPayiTutari(null);
+                islemKayitlari.setHisseSenetleri(alinacakSenet); // İlgili senet
+                islemKayitlari.setSeriNo(null); // Seri numarası
+
+                // İşlem kaydını veritabanına kaydet
+                islemKayitlariService.saveIslemKaydi(islemKayitlari);
+
             } else {
                 // Kullanılabilecek kupon bulunamadı
                 System.out.println("Belirtilen seri numarasına sahip senet için kullanılabilecek kupon bulunamadı.");
@@ -74,7 +91,6 @@ public class IslemlerService {
 
 
     public HisseSenetleri getAlinabilirSenetBySeriNo(Long seriNo) {
-
         // Belirtilen seri numarasına sahip
         Specification<HisseSenetleri> spec = KuponlarSpecification.searchBySeriNo(seriNo);
         List<HisseSenetleri> senetler = hisseSenediService.findBySpec(spec);
@@ -97,80 +113,83 @@ public class IslemlerService {
 
 
     @Transactional
-    public void karPayiDagitimiYap(Long tertipNo, Long hissedarId, int dagitimYili, BigDecimal karPayiOranı) {
+    public void karPayiDagitimiYap(Long tertipNo, int dagitimYili, BigDecimal karPayiOrani) {
         // İstenen sermaye artışını bul
         SermayeArtisi sermayeArtisi = sermayeArtisiService.getSermayeArtisiById(tertipNo);
         if (sermayeArtisi == null) {
             logger.warning("Belirtilen tertip numarasına sahip sermaye artışı bulunamadı.");
             return;
         }
-
-        // İstenen hissedarı bul
-        Hissedarlar hissedar = hissedarlarService.getHissedarById(hissedarId);
-        if (hissedar == null) {
-            logger.warning("Belirtilen hissedar bulunamadı.");
-            return;
-        }
-
-        // Hisseye sahip olan senetleri al
-        List<HisseSenetleri> hisseSenetleri = hisseSenediService.getSenetlerByHissedar(hissedarId);
-        if (hisseSenetleri.isEmpty()) {
-            logger.warning("Hissedarın sahip olduğu senet bulunamadı.");
-            return;
-        }
-
         // Seri numarası bulunarak ilgili sermaye artışına bağlı senetlerin listesi alınır
         List<HisseSenetleri> senetler = hisseSenediService.getSenetlerByTertipNo(tertipNo);
         if (senetler.isEmpty()) {
             logger.warning("Belirtilen sermaye artışına bağlı senet bulunamadı.");
             return;
         }
-
         // Her bir senet için kar payı dağıtımı yapılır
         for (HisseSenetleri senet : senetler) {
-            // Senet hissedara verilmiş mi kontrol et
-            if (!hisseSenetleri.contains(senet)) {
-                System.out.println("Hissedara ait senet yok");
+            // Hissedara atanmış senetleri al
+            if (senet.getHissedar() == null) {
+                System.out.println("Hissedara atanmış senet yok");
                 continue;
             }
-
             // Kar payı kuponlarını kontrol et
             List<Kuponlar> karPayiKuponlar = searchKarPayıKuponlarBySenet(senet);
+            int currentDagitimYili = dagitimYili; // Dağıtım yılını güncellemek için bir kopya oluştur
+            int seriNo = 1;
 
-            // Kar payı dağıtımı yapılacak kuponun yılı ile dağıtım yılını kontrol et
-            boolean karPayiDagitildi = false;
-            for (Kuponlar kupon : karPayiKuponlar) {
-                if (kupon.getKuponYili() == dagitimYili && !kupon.isKullanildiMi()) {
-                    // Kar payı dağıtımı başarılı olduğunda bir KarPayiDagitimi nesnesi oluştur
-                    KarPayiDagitimi karPayiDagitimi = new KarPayiDagitimi();
-                    karPayiDagitimi.setSermayeArtisi(sermayeArtisi);
-                    karPayiDagitimi.setDagitimYili(dagitimYili);
-                    karPayiDagitimi.setSeriNo(senet.getKarPayiDagitimiList().size() + 1); // Senet üzerindeki kar payı dağıtımının kaçıncı olduğunu belirle
-                    karPayiDagitimi.setKarPayiOrani(karPayiOranı); // Kar payı tutarını hesapla
-                    // Kar payı dağıtımını kaydet
-                    karPayıDagitimlariService.saveKarPayiDagitimi(karPayiDagitimi);
+            // Uygun kupon bulunana kadar devam et
+            boolean uygunKuponBulundu = false;
+            int kuponSayisi = 10;
+            while (!uygunKuponBulundu && kuponSayisi <10) {
+                for (Kuponlar kupon : karPayiKuponlar) {
+                    if (kupon.getKuponYili() == currentDagitimYili && !kupon.isKullanildiMi()) {
+                        // Kar payı dağıtımı başarılı olduğunda bir KarPayiDagitimi nesnesi oluştur
+                        KarPayiDagitimi karPayiDagitimi = new KarPayiDagitimi();
+                        karPayiDagitimi.setSermayeArtisi(sermayeArtisi);
+                        karPayiDagitimi.setDagitimYili(dagitimYili);
+                        karPayiDagitimi.setKarPayiOrani(karPayiOrani); // Kar payı tutarını hesapla
+                        karPayiDagitimi.setSeriNo(seriNo);
+                        // Kar payı dağıtımını kaydet
+                        karPayıDagitimlariService.saveKarPayiDagitimi(karPayiDagitimi);
+                        // Senetin kar payı dağıtımları listesine ekle
+                        senet.getKarPayiDagitimiList().add(karPayiDagitimi);
+                        // Kuponun kullanıldığını işaretle
+                        kupon.setKullanildiMi(true);
+                        kuponlarService.save(kupon);
+                        // İşlem kaydını oluştur
+                        IslemKayitlari islemKayitlari = new IslemKayitlari();
+                        islemKayitlari.setIslemTipi(IslemTipi.KAR_PAYI); // İşlem tipi kar payı dağıtımı olarak ayarlanır
+                        islemKayitlari.setKarPayiDagitimi(karPayiDagitimi); // İlgili kar payı dağıtımı
+                        islemKayitlari.setIslemZamani(LocalDateTime.now());
+                        BigDecimal karPayiTutari = senet.getNominalDeger().multiply(karPayiOrani); // Kar payı tutarı = nominal değer x kar payı oranı
+                        islemKayitlari.setKarPayiTutari(karPayiTutari);
+                        islemKayitlari.setHisseSenetleri(senet); // İlgili senet
+                        islemKayitlari.setSeriNo(karPayiDagitimi.getSeriNo()); // Seri numarası
+                        // İşlem kaydını veritabanına kaydet
+                        islemKayitlariService.saveIslemKaydi(islemKayitlari);
 
-                    // Kuponun kullanıldığını işaretle
-                    kupon.setKullanildiMi(true);
-                    kuponlarService.save(kupon);
-
-                    karPayiDagitildi = true;
-                    break;
+                        uygunKuponBulundu = true;
+                        break;
+                    }
                 }
-            }
 
-            // Eğer kar payı dağıtılmadıysa, bir sonraki yılın kuponunu ara
-            if (!karPayiDagitildi) {
-                dagitimYili++; // Dağıtım yılını bir arttır
+                // Eğer uygun kupon bulunamazsa, dağıtım yılını bir sonraki yıla taşı
+                if (!uygunKuponBulundu) {
+                    currentDagitimYili++;
+                    seriNo=1; //yeni yılın ilk dağıtımı
+                }else {
+                    seriNo++;
+                }
+                kuponSayisi++;
+            }
+            if (!uygunKuponBulundu) {
+                System.out.println("Uygun kar payı kuponu bulunamadı.");
             }
         }
     }
 
 
-
-    private BigDecimal calculateKarPayiTutari(BigDecimal karPayiOrani, BigDecimal nominalDeger) {
-        return karPayiOrani.multiply(nominalDeger);
-    }
 
     public List<Kuponlar> searchKarPayıKuponlarBySenet(HisseSenetleri senet) {
         Specification<Kuponlar> spec = KuponlarSpecification.searchKarPayıKuponlarBySenet(senet);

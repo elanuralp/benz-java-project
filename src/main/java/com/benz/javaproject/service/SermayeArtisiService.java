@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -41,6 +42,7 @@ public class SermayeArtisiService {
         sermayeArtisi.setBedelsizArtisMiktari(sermayeArtisiAddModel.getBedelsizArtisMiktari());
         sermayeArtisi.setSermayeArtisOrani(sermayeArtisiAddModel.getSermayeArtisOrani());
         sermayeArtisi.setEskiSermaye(sermayeArtisiAddModel.getEskiSermaye());
+        updateOldCapital(sermayeArtisi);
         return sermayeArtisiRepository.save(sermayeArtisi);
     }
 
@@ -72,6 +74,21 @@ public class SermayeArtisiService {
         SermayeArtisi existingSermayeArtisi = sermayeArtisiRepository.findById(tertipNo)
                 .orElseThrow(SermayeArtisiNotFoundError::new);
         sermayeArtisiRepository.deleteById(tertipNo);
+    }
+
+
+
+
+    @Transactional
+    public void updateOldCapital(SermayeArtisi sermayeArtisi) {
+        if (sermayeArtisi != null) {
+            BigDecimal oldCapital = sermayeArtisi.getEskiSermaye();
+            BigDecimal newCapital = oldCapital.add(sermayeArtisi.getBedelliArtisMiktari()).add(sermayeArtisi.getBedelsizArtisMiktari());
+            sermayeArtisi.setEskiSermaye(newCapital);
+            sermayeArtisiRepository.save(sermayeArtisi);
+        } else {
+            throw new SermayeArtisiNotFoundError();
+        }
     }
 
 

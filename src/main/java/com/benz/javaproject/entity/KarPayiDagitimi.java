@@ -20,7 +20,7 @@ public class KarPayiDagitimi {
     @JsonIgnore
     private Long dagitimId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tertip_id")
     private SermayeArtisi sermayeArtisi;
 
