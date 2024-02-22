@@ -48,7 +48,7 @@ public class HisseSenetleri {
 
 
 
-    @OneToMany(mappedBy = "senet", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "senet", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Kuponlar> kuponlarList = new ArrayList<>();
 
     @OneToMany(mappedBy = "dagitimId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

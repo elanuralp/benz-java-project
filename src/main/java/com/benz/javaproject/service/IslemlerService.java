@@ -59,12 +59,11 @@ public class IslemlerService {
                 alinacakSenet.setHissedar(hissedar);
                 alinacakSenet.getKuponlarList().add(enKucukKupurNoluKupon); // Senet üzerindeki kupon listesine ekleyelim
                 hisseSenediService.save(alinacakSenet);
-                // Hissedarın sahip olduğu senetleri güncelle (Opsiyonel)
+                // Hissedarın sahip olduğu senetleri güncelle
                 if (!hissedar.getSenetlerList().contains(alinacakSenet)) {
                     hissedar.getSenetlerList().add(alinacakSenet);
                     hissedarlarService.updateHissedar(hissedar);
                 }
-
                 // İşlem kaydını oluştur
                 IslemKayitlari islemKayitlari = new IslemKayitlari();
                 islemKayitlari.setIslemTipi(IslemTipi.HISSE_SENETI); // İşlem tipi kar payı dağıtımı olarak ayarlanır
@@ -107,7 +106,6 @@ public class IslemlerService {
         return kuponlarService.findAll(spec);
     }
     // Logger nesnesini tanımla
-    private static final Logger logger = Logger.getLogger(IslemlerService.class.getName());
 
 
 
@@ -117,13 +115,13 @@ public class IslemlerService {
         // İstenen sermaye artışını bul
         SermayeArtisi sermayeArtisi = sermayeArtisiService.getSermayeArtisiById(tertipNo);
         if (sermayeArtisi == null) {
-            logger.warning("Belirtilen tertip numarasına sahip sermaye artışı bulunamadı.");
+            //hata tanımı
             return;
         }
         // Seri numarası bulunarak ilgili sermaye artışına bağlı senetlerin listesi alınır
         List<HisseSenetleri> senetler = hisseSenediService.getSenetlerByTertipNo(tertipNo);
         if (senetler.isEmpty()) {
-            logger.warning("Belirtilen sermaye artışına bağlı senet bulunamadı.");
+            //hata tanımı
             return;
         }
         // Her bir senet için kar payı dağıtımı yapılır
@@ -137,7 +135,6 @@ public class IslemlerService {
             List<Kuponlar> karPayiKuponlar = searchKarPayıKuponlarBySenet(senet);
             int currentDagitimYili = dagitimYili; // Dağıtım yılını güncellemek için bir kopya oluştur
             int seriNo = 1;
-
             // Uygun kupon bulunana kadar devam et
             boolean uygunKuponBulundu = false;
             int kuponSayisi = 10;
@@ -173,7 +170,6 @@ public class IslemlerService {
                         break;
                     }
                 }
-
                 // Eğer uygun kupon bulunamazsa, dağıtım yılını bir sonraki yıla taşı
                 if (!uygunKuponBulundu) {
                     currentDagitimYili++;

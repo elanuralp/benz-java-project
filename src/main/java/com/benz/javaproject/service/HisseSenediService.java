@@ -81,17 +81,6 @@ public class HisseSenediService {
     }
 
 
-//    public HisseSenetleri getAlinabilirSenetBySeriNo(Long seriNo) {
-//        // Belirtilen seri numarasına sahip senedi bul
-//        Specification<HisseSenetleri> spec = KuponlarSpecification.searchBySeriNo(seriNo);
-//        List<HisseSenetleri> senetler = hisseSenetleriRepository.findAll(spec);
-//        if (senetler.isEmpty()) {
-//            return null;
-//        } else {
-//            return senetler.get(0); // Örneğin, ilk seneti seçtik
-//        }
-//    }
-
 
 
 

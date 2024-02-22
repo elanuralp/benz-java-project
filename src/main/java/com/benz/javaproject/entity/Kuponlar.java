@@ -17,7 +17,7 @@ public class Kuponlar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
+    //@JsonIgnore
     private int kuponId;
 
     @Enumerated(EnumType.STRING)
@@ -31,7 +31,7 @@ public class Kuponlar {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "senet_id")
-    @JsonIgnore //loop solved
+    @JsonIgnore
     private HisseSenetleri senet;
 
 }

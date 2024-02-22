@@ -9,7 +9,5 @@ public enum KuponTuru {
     PAY_ALMA,
     KAR_PAYI
 
-
-
 }
 

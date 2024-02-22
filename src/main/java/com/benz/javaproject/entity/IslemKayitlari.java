@@ -25,19 +25,18 @@ public class IslemKayitlari {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "dagitimId")
+
     private KarPayiDagitimi karPayiDagitimi;
     private LocalDateTime islemZamani;
     private BigDecimal karPayiTutari;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "senetId")
     private HisseSenetleri hisseSenetleri;
+
     private Integer seriNo;
 
 
 
-    @PrePersist
-    public void prePersist() {
-        this.islemZamani = LocalDateTime.now();
-    }
 
 }
