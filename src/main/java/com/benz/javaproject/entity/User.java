@@ -2,7 +2,6 @@ package com.benz.javaproject.entity;
 import com.benz.javaproject.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,27 +13,29 @@ import java.util.List;
 
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-public class User implements UserDetails {
+@Table(name = "user")
+public class User implements UserDetails{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private String email;
-    private String password;
+    private Integer id;
+
     private String firstName;
-    private String lastName;
+
+    private String secondName;
+
+    private String email;
+
+    private String password;
+
     private Role role;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
 
-    @Override
-    public String getPassword() {
-        return password;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

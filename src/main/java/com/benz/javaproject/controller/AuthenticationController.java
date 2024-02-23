@@ -2,52 +2,39 @@ package com.benz.javaproject.controller;
 
 
 import com.benz.javaproject.entity.User;
-import com.benz.javaproject.model.AuthenticationRequest;
-import com.benz.javaproject.repository.UserRepository;
-import com.benz.javaproject.service.JwtService;
+import com.benz.javaproject.model.JwtAuthenticationResponse;
+import com.benz.javaproject.model.RefreshTokenRequest;
+import com.benz.javaproject.model.SignUpRequest;
+import com.benz.javaproject.model.SigninRequest;
+import com.benz.javaproject.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final AuthenticationService authenticationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Map<String,Object>> register(@RequestBody User request){
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(request);
-        return ResponseEntity.ok().body(Map.of("response","User added Successfully"));
+    @PostMapping("/signUp")
+    public ResponseEntity<User> signUp(@RequestBody SignUpRequest signUpRequest){
+        return ResponseEntity.ok(authenticationService.signUp(signUpRequest));
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<Map<String,Object>> authenticate(@RequestBody AuthenticationRequest request){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getUserName(),
-                request.getPassword()
-        ));
-        var user = userRepository.findByEmail(request.getUserName()).orElseThrow(
-                () -> new UsernameNotFoundException("User not found")
-        );
-        String token = jwtService.generateToken(user);
-        return ResponseEntity.ok().body(Map.of("reponser","Successfully authenticated","token",token));
-
-
+    @PostMapping("/signIn")
+    public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SigninRequest signinRequest){
+        return ResponseEntity.ok(authenticationService.signIn(signinRequest));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
+    }
 
 
 }
