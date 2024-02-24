@@ -14,4 +14,13 @@ public interface AuthenticationService {
     public JwtAuthenticationResponse signIn(SigninRequest signinRequest);
 
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+    void changePassword(String email, String temporaryPassword, String newPassword);
+
+    String generateTemporaryPassword();
+
+    void resetPassword(String email);
+
+
+
 }

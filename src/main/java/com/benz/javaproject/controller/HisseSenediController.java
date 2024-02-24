@@ -1,15 +1,18 @@
 package com.benz.javaproject.controller;
 
 import com.benz.javaproject.entity.HisseSenetleri;
+import com.benz.javaproject.enums.Role;
 import com.benz.javaproject.model.hissesenedi.SenetBasRequest;
 import com.benz.javaproject.service.HisseSenediService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/hisse-senetleri")
+
 public class HisseSenediController {
 
     private final HisseSenediService hisseSenediService;
@@ -19,7 +22,9 @@ public class HisseSenediController {
         this.hisseSenediService = hisseSenetleriService;
     }
 
+
     @GetMapping
+    @PreAuthorize("hasRole('0')")
     public ResponseEntity<List<HisseSenetleri>> getAllHisseSenetleri() {
         List<HisseSenetleri> hisseSenetleriList = hisseSenediService.getAllHisseSenetleri();
         return ResponseEntity.ok(hisseSenetleriList);

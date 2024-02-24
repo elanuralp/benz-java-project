@@ -10,12 +10,15 @@ import com.benz.javaproject.repository.UserRepository;
 import com.benz.javaproject.service.AuthenticationService;
 import com.benz.javaproject.service.JWTService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +76,40 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
 
     }
+
+    public void resetPassword(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            String temporaryPassword = generateTemporaryPassword();
+            user.setTemporaryPassword(temporaryPassword);
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Kullanıcı bulunamadı");
+        }
+    }
+
+
+    public String generateTemporaryPassword() {
+        return RandomStringUtils.randomNumeric(6);
+    }
+
+
+    public void changePassword(String email, String temporaryPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı"));
+        // Kullanıcının geçici şifresi doğruysa
+        if (user.getTemporaryPassword().equals(temporaryPassword)) {
+            // Yeni şifreyi kodla ve kullanıcıya ata
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setTemporaryPassword(null); // Geçici şifreyi temizle
+            userRepository.save(user); // Veritabanına kaydet
+        } else {
+            throw new IllegalArgumentException("Geçici şifre hatalı");
+        }
+    }
+
+
 
 
 }

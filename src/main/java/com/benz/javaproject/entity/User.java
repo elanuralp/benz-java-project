@@ -31,6 +31,9 @@ public class User implements UserDetails{
 
     private Role role;
 
+    //for reset password operation
+    private String temporaryPassword;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

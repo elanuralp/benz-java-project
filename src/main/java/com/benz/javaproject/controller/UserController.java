@@ -18,11 +18,4 @@ public class UserController {
         return ResponseEntity.ok("Hi, User");
     }
 
-
-    @PatchMapping
-    public ResponseEntity<?> changePassword(
-        @RequestBody ChangePasswordRequest request
-    ){
-
-    }
 }

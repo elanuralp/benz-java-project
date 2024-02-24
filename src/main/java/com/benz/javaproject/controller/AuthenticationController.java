@@ -9,14 +9,12 @@ import com.benz.javaproject.model.SigninRequest;
 import com.benz.javaproject.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -35,6 +33,22 @@ public class AuthenticationController {
     public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
+
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestParam String email) {
+        authenticationService.resetPassword(email);
+        return ResponseEntity.ok("Geçici şifre oluşturuldu ve kullanıcıya atandı.");
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<String> changePassword(@RequestParam String email, @RequestParam String temporaryPassword, @RequestParam String newPassword) {
+        authenticationService.changePassword(email, temporaryPassword, newPassword);
+        return ResponseEntity.ok("Şifre başarıyla değiştirildi.");
+    }
+
+
+
 
 
 }
