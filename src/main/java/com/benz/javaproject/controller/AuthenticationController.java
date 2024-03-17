@@ -30,10 +30,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody RefreshTokenRequest refreshTokenRequest){
+    public ResponseEntity<JwtAuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
-
 
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(@RequestParam String email) {
@@ -46,9 +45,4 @@ public class AuthenticationController {
         authenticationService.changePassword(email, temporaryPassword, newPassword);
         return ResponseEntity.ok("Şifre başarıyla değiştirildi.");
     }
-
-
-
-
-
 }

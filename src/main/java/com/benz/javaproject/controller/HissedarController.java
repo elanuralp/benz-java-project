@@ -8,6 +8,7 @@ import com.benz.javaproject.service.HissedarlarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class HissedarController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_CUMBURLEK')")
     public ResponseEntity<Hissedarlar> getHissedarById(@PathVariable Long id) {
         Hissedarlar hissedar = hissedarlarService.getHissedarById(id);
         return ResponseEntity.ok(hissedar);

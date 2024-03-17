@@ -74,7 +74,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwtAuthenticationResponse;
         }
         return null;
-
     }
 
     public void resetPassword(String email) {
