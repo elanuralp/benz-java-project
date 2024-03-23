@@ -15,109 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@Service
-@Transactional(readOnly = true)
-public class HisseSenediService {
-
-    private final HisseSenetleriRepository hisseSenetleriRepository;
-    private final KuponlarService kuponlarService;
-    private final SermayeArtisiService sermayeArtisiService;
-
-
-    @Autowired
-    public HisseSenediService(HisseSenetleriRepository hisseSenetleriRepository, KuponlarService kuponlarService, SermayeArtisiService sermayeArtisiService) {
-        this.hisseSenetleriRepository = hisseSenetleriRepository;
-        this.kuponlarService = kuponlarService;
-        this.sermayeArtisiService = sermayeArtisiService;
-    }
-
-    public List<HisseSenetleri> getAllHisseSenetleri() {
-        return hisseSenetleriRepository.findAll();
-    }
-
-    public HisseSenetleri getHisseSenetleriBySeriNo(int seriNo) {
-        return hisseSenetleriRepository.findOne(HisseSenetleriSpecification.bySeriNo(seriNo))
-                .orElseThrow(HisseSenediNotExistsError::new);
-    }
-
-
-    public List<HisseSenetleri> getSenetlerByTertipNo(Long tertipNo) {
-        // Belirtilen tertip numarasına sahip sermaye artışına bağlı senetleri al
-        Specification<HisseSenetleri> spec = HisseSenetleriSpecification.searchByTertipNo(tertipNo);
-        return hisseSenetleriRepository.findAll(spec);
-    }
-
-    public List<HisseSenetleri> getSenetlerByHissedar(Long hissedarId) {
-        return hisseSenetleriRepository.findAll(HisseSenetleriSpecification.searchByHissedarId(hissedarId));
-    }
-
-
-
-    @Transactional
-    public List<HisseSenetleri> olusturSenetler(List<SenetBasRequest> senetListesi, Long tertipNo) {
-        SermayeArtisi sermayeArtisi = sermayeArtisiService.getSermayeArtisiById(tertipNo);
-        Integer lastSeriNo = findMaxSeriNoByTertipNo(tertipNo);
-        if (lastSeriNo == null) {
-            lastSeriNo = 0;
-        }
-        // Nominal değere göre senet listesini küçükten büyüğe sırala
-        senetListesi.sort(Comparator.comparing(SenetBasRequest::getNominal));
-        List<HisseSenetleri> yeniSenetler = new ArrayList<>();
-        for (SenetBasRequest senet : senetListesi) {
-            for (int i = 0; i < senet.getAdet(); i++) {
-                HisseSenetleri yeniSenet = new HisseSenetleri();
-                yeniSenet.setNominalDeger(senet.getNominal());
-                yeniSenet.setSermayeArtisi(sermayeArtisi);
-                yeniSenet.setSeriNo(++lastSeriNo);
-                yeniSenetler.add(yeniSenet);
-            }
-        }
-        List<HisseSenetleri> kaydedilenSenetler = hisseSenetleriRepository.saveAll(yeniSenetler);
-        for (HisseSenetleri senet : kaydedilenSenetler) {
-            List<Kuponlar> olusturulanKuponlar = kuponlarService.kuponOlustur(senet);
-            senet.setKuponlarList(olusturulanKuponlar);
-        }
-        return kaydedilenSenetler;
-    }
-
-
-
-
-
-
-    @Transactional
-    public HisseSenetleri save(HisseSenetleri senet) {
-        return hisseSenetleriRepository.save(senet);
-    }
-
-
-
-
-    Integer findMaxSeriNoByTertipNo(Long tertipNo) {
-        return hisseSenetleriRepository.findMaxSeriNoByTertipNo(tertipNo);
-    }
-
-
-    public List<HisseSenetleri> findBySpec(Specification<HisseSenetleri> spec) {
-        return hisseSenetleriRepository.findAll(spec);
-    }
-
-
-
-
-
-
-
-//    public List<HisseSenetleri> searchHisseSenetleri(HisseSenediSearchModel hisseSenediSearchModel) {
-//        Specification<HisseSenetleri> specification = HisseSenetleriSpecification.buildSpecification(hisseSenediSearchModel);
-//        return hisseSenetleriRepository.findAll(specification);
-//    }
-
-    @Transactional
-    public void deleteHisseSenediBySeriNo(int seriNo) {
-
-        HisseSenetleri existingHisseSenedi = hisseSenetleriRepository.findOne(HisseSenetleriSpecification.bySeriNo(seriNo))
-                .orElseThrow(() -> new HisseSenediNotExistsError());
-        hisseSenetleriRepository.delete(existingHisseSenedi);
-    }
+public interface HisseSenediService {
+    public List<HisseSenetleri> getAllHisseSenetleri();
+    public HisseSenetleri getHisseSenetleriBySeriNo(int seriNo);
+    public List<HisseSenetleri> getSenetlerByTertipNo(Long tertipNo);
+    public List<HisseSenetleri> getSenetlerByHissedar(Long hissedarId);
+    public List<HisseSenetleri> olusturSenetler(List<SenetBasRequest> senetListesi, Long tertipNo);
+    public HisseSenetleri save(HisseSenetleri senet);
+    public Integer findMaxSeriNoByTertipNo(Long tertipNo);
+    public List<HisseSenetleri> findBySpec(Specification<HisseSenetleri> spec);
+    public void deleteHisseSenediBySeriNo(int seriNo);
 }

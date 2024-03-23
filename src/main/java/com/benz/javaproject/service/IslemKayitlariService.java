@@ -8,26 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class IslemKayitlariService {
-
-    private final IslemKayitlarıRepository islemKayitlarıRepository;
-
-    @Autowired
-    public IslemKayitlariService(IslemKayitlarıRepository islemKayitlarıRepository) {
-        this.islemKayitlarıRepository = islemKayitlarıRepository;
-    }
-
-    public List<IslemKayitlari> getAllIslemKayitlari() {
-        return islemKayitlarıRepository.findAll();
-    }
-
-
-    public IslemKayitlari saveIslemKaydi(IslemKayitlari islemKayitlari) {
-        return islemKayitlarıRepository.save(islemKayitlari);
-    }
-
-    public void deleteIslemKaydi(Long id) {
-        islemKayitlarıRepository.deleteById(id);
-    }
+public interface IslemKayitlariService {
+    public List<IslemKayitlari> getAllIslemKayitlari();
+    public IslemKayitlari saveIslemKaydi(IslemKayitlari islemKayitlari);
+    public void deleteIslemKaydi(Long id);
 }

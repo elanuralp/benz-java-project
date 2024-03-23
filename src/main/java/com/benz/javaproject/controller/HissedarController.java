@@ -32,7 +32,7 @@ public class HissedarController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_CUMBURLEK')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Hissedarlar> getHissedarById(@PathVariable Long id) {
         Hissedarlar hissedar = hissedarlarService.getHissedarById(id);
         return ResponseEntity.ok(hissedar);
