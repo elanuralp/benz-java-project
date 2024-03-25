@@ -1,0 +1,17 @@
+{
+  "realm": "SpringBootKeycloak",
+  "auth-server-url": "http://elanur.local:8081/keycloak",
+  "resource": "spring-login",
+  "credentials":  {
+    "secret": "07CMMFwwWk3caDlB1h9RCFtlKfR2MjZj"
+  },
+  "paths" : [
+    {
+      "path": "/swagger-ui/*",
+      "enforcement-mode": "DISABLED"
+    },{
+      "path": "/v3/api-docs/*",
+      "enforcement-mode": "DISABLED"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import com.benz.javaproject.entity.Hissedarlar;
 import com.benz.javaproject.enums.YatirimciTipi;
 import com.benz.javaproject.model.hissedar.HissedarSearchModel;
 import com.benz.javaproject.service.HissedarlarService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/hissedarlar")
-//@PreAuthorize()
+@SecurityRequirement(name = "Keycloak")
 public class HissedarController {
 
     private final HissedarlarService hissedarlarService;
@@ -32,13 +33,14 @@ public class HissedarController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Hissedarlar> getHissedarById(@PathVariable Long id) {
         Hissedarlar hissedar = hissedarlarService.getHissedarById(id);
         return ResponseEntity.ok(hissedar);
     }
 
     @PostMapping
+
     public ResponseEntity<Hissedarlar> createHissedar(@RequestBody Hissedarlar hissedar) {
         Hissedarlar createdHissedar = hissedarlarService.createHissedar(hissedar);
         if (createdHissedar != null) {

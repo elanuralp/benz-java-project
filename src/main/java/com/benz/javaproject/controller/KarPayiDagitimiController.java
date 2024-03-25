@@ -2,6 +2,7 @@ package com.benz.javaproject.controller;
 
 import com.benz.javaproject.entity.KarPayiDagitimi;
 import com.benz.javaproject.service.KarPayiDagitimiService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/karPayiDagitimi")
+@SecurityRequirement(name = "Keycloak")
 public class KarPayiDagitimiController {
 
     private final KarPayiDagitimiService karPayiDagitimiService;

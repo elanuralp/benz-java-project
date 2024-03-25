@@ -3,6 +3,7 @@ package com.benz.javaproject.controller;
 import com.benz.javaproject.entity.HisseSenetleri;
 import com.benz.javaproject.entity.Kuponlar;
 import com.benz.javaproject.service.KuponlarService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/kuponlar")
+@SecurityRequirement(name = "Keycloak")
 public class KuponlarController {
 
     private final KuponlarService kuponlarService;

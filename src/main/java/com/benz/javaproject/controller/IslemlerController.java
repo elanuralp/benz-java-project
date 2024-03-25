@@ -1,6 +1,7 @@
 package com.benz.javaproject.controller;
 
 import com.benz.javaproject.service.IslemlerService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 
 @Controller
 @RestController("/ıslemler")
+@SecurityRequirement(name = "Keycloak")
 public class IslemlerController {
 
     private final IslemlerService islemlerService;

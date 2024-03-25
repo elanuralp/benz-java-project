@@ -7,6 +7,7 @@ import com.benz.javaproject.model.RefreshTokenRequest;
 import com.benz.javaproject.model.SignUpRequest;
 import com.benz.javaproject.model.SigninRequest;
 import com.benz.javaproject.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-
+@SecurityRequirement(name = "Keycloak")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;

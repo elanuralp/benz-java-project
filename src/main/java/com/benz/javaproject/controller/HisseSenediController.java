@@ -4,6 +4,7 @@ import com.benz.javaproject.entity.HisseSenetleri;
 import com.benz.javaproject.enums.Role;
 import com.benz.javaproject.model.hissesenedi.SenetBasRequest;
 import com.benz.javaproject.service.HisseSenediService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/hisse-senetleri")
-
+@SecurityRequirement(name = "Keycloak")
 public class HisseSenediController {
 
     private final HisseSenediService hisseSenediService;

@@ -5,6 +5,7 @@ import com.benz.javaproject.model.SermayeArtisi.SermayeArtisSearchModel;
 import com.benz.javaproject.model.SermayeArtisi.SermayeArtisiUpdateModel;
 import com.benz.javaproject.model.SermayeArtisi.SermayeArtısıAddModel;
 import com.benz.javaproject.service.SermayeArtisiService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sermaye-artisi")
+@SecurityRequirement(name = "Keycloak")
 public class SermayeArtisiController {
 
     private final SermayeArtisiService sermayeArtisiService;
