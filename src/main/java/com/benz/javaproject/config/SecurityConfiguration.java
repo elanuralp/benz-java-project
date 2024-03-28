@@ -51,176 +51,75 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration {
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-//    private final UserService userService;
 
-    //@Autowired
-    //JwtAuthConverter jwtAuthConverter;
-
-
-    @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http)
-        throws Exception{
-        http.csrf(t -> t.disable());
-        http.addFilterAfter(createPolicyEnforcerFilter(),
-                BearerTokenAuthenticationFilter.class);
-        http.sessionManagement(
-                t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
-        return http.build();
-
-    }
-
-    private ServletPolicyEnforcerFilter createPolicyEnforcerFilter() {
-        return new ServletPolicyEnforcerFilter(new ConfigurationResolver() {
-            @Override
-            public PolicyEnforcerConfig resolve(HttpRequest httpRequest) {
-                try {
-                    return JsonSerialization
-                            .readValue(getClass().getResourceAsStream("/policy-enforcer.json"),
-                                    PolicyEnforcerConfig.class);
-                }catch (IOException e){
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
-
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-//        throws Exception{
-//        http.csrf(t -> t.disable());
-//        http.authorizeHttpRequests(authorize -> {
-//            authorize
-//                    .requestMatchers(HttpMethod.GET,"/hissedarlar/all",
-//                            "swagger-ui/**", "swagger-ui**", "/v3/api-docs/**", "/v3/api-docs**"
-//
-//                            ).permitAll()
-//                    .anyRequest().authenticated();
-//        });
-//        http.oauth2ResourceServer(t -> {
-//            t.jwt(Customizer.withDefaults());
-//        });
-//        http.sessionManagement(
-//                t-> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//        );
-//        return http.build();
-//
-//    }
+    public static final String ADMIN = "admin";
+    public static final String GENERAL = "general";
+    private final JwtAuthConverter jwtAuthConverter;
 
 
     @Bean
-    public DefaultMethodSecurityExpressionHandler msecurity(){
-        DefaultMethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler =
-                new DefaultMethodSecurityExpressionHandler();
-        defaultMethodSecurityExpressionHandler.setDefaultRolePrefix("");
-        return defaultMethodSecurityExpressionHandler;
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+
+        return httpSecurity
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthConverter)
+                        )
+                )
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
     }
+
     @Bean
-    public JwtAuthenticationConverter con(){
-        JwtAuthenticationConverter c = new JwtAuthenticationConverter();
-        JwtGrantedAuthoritiesConverter cv = new JwtGrantedAuthoritiesConverter();
-        cv.setAuthorityPrefix("");
-        cv.setAuthoritiesClaimName("roles");
-        c.setJwtGrantedAuthoritiesConverter(cv);
-        return c;
+    public WebSecurityCustomizer webSecurityCustomizer() {
 
+        return (web) -> {
+            web.ignoring().requestMatchers(
+                    HttpMethod.POST,
+                    "/public/**","/users"
+            );
+            web.ignoring().requestMatchers(
+                    HttpMethod.GET,
+                    "/public/**"
+            );
+            web.ignoring().requestMatchers(
+                    HttpMethod.DELETE,
+                    "/public/**"
+            );
+            web.ignoring().requestMatchers(
+                    HttpMethod.PUT,
+                    "/public/**"
+            );
+            web.ignoring().requestMatchers(
+                            HttpMethod.OPTIONS,
+                            "/**"
+                    )
+                    .requestMatchers("/v3/api-docs/**", "/configuration/**", "/swagger-ui/**",
+                            "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/api-docs/**");
 
-    }
-
-//    @Bean
-    //çalışıyor!!
-//    public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .oauth2Client()
-//                .and()
-//                .oauth2Login()
-//                .tokenEndpoint()
-//                .and()
-//                .userInfoEndpoint();
-//        http
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
-//        http
-//                .authorizeHttpRequests()
-//                .requestMatchers("/unauthenticated", "/oauth2/**", "/login/**").permitAll()
-//                .anyRequest()
-//                .fullyAuthenticated()
-//                .and()
-//                .logout()
-//                .logoutSuccessUrl("http://elanur.local:8081/realms/SpringBootKeycloak/protocol/openid-connect/logout?redirect_uri=http://localhost:8081/");
-//
-//        return http.build();
-//    }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-//        http.csrf().disable();
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-////                .authorizeHttpRequests()
-////                .requestMatchers("/**")
-////                .permitAll()
-////                .and()
-//                .authorizeHttpRequests()
-//                .requestMatchers("/whoami")
-//                .permitAll()
-//                .and()
-//                .authorizeHttpRequests()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .oauth2ResourceServer().jwt();
-//
-//        return http.build();
-////        http.csrf(AbstractHttpConfigurer::disable)
-////                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**",
-////                                "/v2/api-docs",
-////                                "/v3/api-docs",
-////                                "/v3/api-docs/**",
-////                                "/swagger-resources",
-////                                "/swagger-resources/**",
-////                                "/configuration/ui",
-////                                "/configuration/security",
-////                                "/swagger-ui/**",
-////                                "/webjars/**",
-////                                "/swagger-ui.html")
-////                        .permitAll()
-////                        .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ADMIN.name()) //controllerlar
-////                        .requestMatchers("/api/v1/user").hasAnyAuthority(Role.USER.name())
-////
-////
-////
-////                        .anyRequest().authenticated())
-////                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-////                .authenticationProvider(authenticationProvider()).addFilterBefore(
-////                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-////                );
-////                return http.build();
-//    }
-
-//    @Bean
-//    public AuthenticationProvider authenticationProvider(){
-//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//        authenticationProvider.setUserDetailsService(userService.userDetailsService());
-//        authenticationProvider.setPasswordEncoder(passwordEncoder());
-//        return authenticationProvider;
-//    }
-//
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-//
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-        throws Exception{
-            return config.getAuthenticationManager();
+        };
     }
 
 }
+
+

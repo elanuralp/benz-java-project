@@ -14,13 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-@SecurityScheme(
-		name = "Keycloak",
-		openIdConnectUrl = "http://elanur.local:8081/keycloak/realms/SpringBootKeycloak/.well-known/openid-configuration",
-		scheme = "bearer",
-		type = SecuritySchemeType.OPENIDCONNECT,
-		in = SecuritySchemeIn.HEADER
-)
+
 public class JavaprojectApplication implements CommandLineRunner {
 
 	@Autowired

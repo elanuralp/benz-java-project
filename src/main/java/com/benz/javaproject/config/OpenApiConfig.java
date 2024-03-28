@@ -1,53 +1,35 @@
 package com.benz.javaproject.config;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.servers.Server;
-
-@OpenAPIDefinition(
-        info = @Info(
-                contact = @Contact(
-                        name = "Ela Nur",
-                        email = "elanur714@gmail.com"
-                ),
-                description = "OpenApi documentation with Spring Security",
-                title = "OpenApi specification - Ela",
-                version = "1.0",
-                license = @License(
-                        name = "License name",
-                        url = "https://some-url.com"
-                ),
-                termsOfService = "Terms of service"
-        ),
-        servers = {
-                @Server(
-                        description = "Local ENV",
-                        url = "http://${server.hostname}:8080"
-                ),
-                @Server(
-                        description = "PROD ENV",
-                        url = "http://${server.hostname}:8080"
-                )
-        },
-        security = {
-                @SecurityRequirement(
-                        name = "Keycloak"
-                )
-        }
-)
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 
-
-
-
-
-
-
+@Configuration
 public class OpenApiConfig {
+
+    private SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
+    }
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI().addSecurityItem(new SecurityRequirement().
+                        addList("Bearer Authentication"))
+                .components(new Components().addSecuritySchemes
+                        ("Bearer Authentication", createAPIKeyScheme()))
+                .info(new Info().title("My REST API")
+                        .description("Spring Integration API.")
+                        .license(new License().name("License of API")
+                                .url("API license URL")));
+    }
 }
+
