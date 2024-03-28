@@ -1,4 +1,6 @@
 package com.benz.javaproject.service;
 
-public class RoleService {
+public interface RoleService {
+    void assignRoleToUser(String userId, String roleName);
+
 }

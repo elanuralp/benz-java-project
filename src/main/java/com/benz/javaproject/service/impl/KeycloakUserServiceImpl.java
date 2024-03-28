@@ -3,6 +3,7 @@ package com.benz.javaproject.service.impl;
 
 import com.benz.javaproject.model.UserRegistrationRecord;
 import com.benz.javaproject.service.KeycloakUserService;
+import com.fasterxml.jackson.annotation.SimpleObjectIdResolver;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.internal.logging.InternalLogger;
@@ -22,9 +23,11 @@ import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
 
+
 @Slf4j
 @Service
 public class KeycloakUserServiceImpl implements KeycloakUserService {
+    private static final String UPDATE_PASSWORD = "UPDATE_PASSWORD";
 
 
 
@@ -86,7 +89,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
         //response.readEntity()
 
-        
+
 
     }
 
@@ -126,4 +129,30 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
             throw e;
         }
     }
+
+
+    public UserResource getUserResource(String userId){
+        UsersResource usersResource = getUsersResource();
+        return usersResource.get(userId);
+    }
+
+    @Override
+    public void forgotPassword(String username) {
+
+        UsersResource usersResource =  getUsersResource();
+        List<UserRepresentation> representationList = usersResource.searchByUsername(username, true);
+        UserRepresentation userRepresentation = representationList.stream().findFirst().orElse(null);
+        if(userRepresentation!=null){
+            UserResource userResource = usersResource.get(userRepresentation.getId());
+            List<String> actions = new ArrayList<>();
+
+            actions.add(UPDATE_PASSWORD);
+            userResource.executeActionsEmail(actions);
+            return;
+        }
+        throw new RuntimeException("User not found");
+
+
+    }
+
 }
