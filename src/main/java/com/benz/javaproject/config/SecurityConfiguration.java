@@ -2,7 +2,7 @@ package com.benz.javaproject.config;
 
 
 import com.benz.javaproject.enums.Role;
-import com.benz.javaproject.service.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.keycloak.adapters.authorization.integration.jakarta.ServletPolicyEnforcerFilter;
 import org.keycloak.adapters.authorization.spi.ConfigurationResolver;

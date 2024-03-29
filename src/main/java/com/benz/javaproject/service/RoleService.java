@@ -1,6 +1,6 @@
 package com.benz.javaproject.service;
 
 public interface RoleService {
-    void assignRoleToUser(String userId, String roleName);
+    void assignRole(String userId, String roleName);
 
 }

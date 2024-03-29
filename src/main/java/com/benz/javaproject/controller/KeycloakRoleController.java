@@ -17,7 +17,7 @@ public class KeycloakRoleController {
     @PutMapping("/assign-role/user/{userId}")
     public ResponseEntity<?>  assignRole(@PathVariable String userId, @RequestParam String roleName){
 
-        roleService.assignRoleToUser(userId, roleName);
+        roleService.assignRole(userId, roleName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
